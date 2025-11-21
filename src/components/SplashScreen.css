@@ -1,0 +1,380 @@
+.splash-screen-inner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.splash-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xxl);
+  animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Logo Animation */
+.splash-logo {
+  width: 120px;
+  height: 120px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.logo-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+}
+
+/* Hexagon animations */
+.hexagon-group {
+  animation: rotateHexagon 6s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes rotateHexagon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hexagon {
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+  opacity: 0.8;
+}
+
+.hexagon-1 {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: drawHexagon 2s ease-out forwards, pulseHexagon 2s ease-in-out infinite 2s;
+}
+
+.hexagon-2 {
+  stroke-dasharray: 180;
+  stroke-dashoffset: 180;
+  animation: drawHexagon 2s ease-out 0.3s forwards, pulseHexagon 2s ease-in-out infinite 2.3s;
+  opacity: 0.6;
+}
+
+@keyframes drawHexagon {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pulseHexagon {
+  0%, 100% {
+    opacity: 0.8;
+    stroke-width: 2;
+  }
+  50% {
+    opacity: 0.4;
+    stroke-width: 3;
+  }
+}
+
+/* Spark animation */
+.spark-group {
+  animation: sparkPulse 1.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes sparkPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+.spark {
+  fill: #ffd700;
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+}
+
+.pulse-dot {
+  fill: white;
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    r: 3;
+  }
+  50% {
+    opacity: 0.5;
+    r: 5;
+  }
+}
+
+/* Title */
+.splash-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: white;
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.title-genie {
+  animation: fadeInScale 0.8s ease-out 0.5s backwards;
+}
+
+.title-mobile {
+  font-size: 32px;
+  font-weight: 400;
+  opacity: 0.9;
+  animation: fadeInScale 0.8s ease-out 0.8s backwards;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Loader */
+.splash-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 280px;
+  animation: fadeIn 1s ease-out 1.2s backwards;
+}
+
+.loader-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loader-progress {
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.8) 0%, 
+    white 50%, 
+    rgba(255, 255, 255, 0.8) 100%
+  );
+  animation: loading 1.5s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+@keyframes loading {
+  0% {
+    width: 0%;
+    margin-left: 0%;
+  }
+  50% {
+    width: 60%;
+    margin-left: 20%;
+  }
+  100% {
+    width: 0%;
+    margin-left: 100%;
+  }
+}
+
+.loader-text {
+  color: white;
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+  margin: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Powered by badge */
+.powered-by {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: white;
+  font-size: var(--font-size-sm);
+  opacity: 0.8;
+  animation: fadeIn 1s ease-out 1.5s backwards;
+}
+
+.powered-by strong {
+  font-weight: 700;
+}
+
+/* Background particles */
+.splash-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: floatParticle 10s infinite ease-in-out;
+}
+
+.particle-1 {
+  width: 60px;
+  height: 60px;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 12s;
+}
+
+.particle-2 {
+  width: 40px;
+  height: 40px;
+  top: 70%;
+  left: 80%;
+  animation-delay: 2s;
+  animation-duration: 15s;
+}
+
+.particle-3 {
+  width: 80px;
+  height: 80px;
+  top: 30%;
+  left: 70%;
+  animation-delay: 4s;
+  animation-duration: 18s;
+}
+
+.particle-4 {
+  width: 50px;
+  height: 50px;
+  top: 80%;
+  left: 20%;
+  animation-delay: 1s;
+  animation-duration: 14s;
+}
+
+.particle-5 {
+  width: 70px;
+  height: 70px;
+  top: 50%;
+  left: 50%;
+  animation-delay: 3s;
+  animation-duration: 16s;
+}
+
+@keyframes floatParticle {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(30px, -30px) scale(1.1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-20px, -60px) scale(0.9);
+    opacity: 0.3;
+  }
+  75% {
+    transform: translate(-40px, -30px) scale(1.05);
+    opacity: 0.4;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .splash-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .splash-title {
+    font-size: 36px;
+  }
+
+  .title-mobile {
+    font-size: 24px;
+  }
+
+  .splash-loader {
+    width: 240px;
+  }
+
+  .particle {
+    opacity: 0.2;
+  }
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .splash-screen-inner,
+  .splash-content,
+  .splash-logo,
+  .hexagon-group,
+  .spark-group,
+  .title-genie,
+  .title-mobile,
+  .splash-loader,
+  .powered-by,
+  .particle {
+    animation: none !important;
+  }
+}
+

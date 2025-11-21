@@ -1,0 +1,28 @@
+{
+  "name": "Genie Mobile App",
+  "short_name": "Genie",
+  "description": "Databricks Genie AI Assistant - Interact with your data using natural language",
+  "start_url": ".",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "business"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
+

@@ -1,0 +1,20 @@
+# Databricks App Configuration
+# This file is for PRODUCTION DEPLOYMENT to Databricks Apps
+
+command: ["python3", "server.py"]
+
+# Environment variables - using valueFrom to get resource IDs
+env:
+  - name: "GENIE_SPACE_ID"
+    valueFrom: "genie-space-id"
+  - name: "SQL_WAREHOUSE_ID"
+    valueFrom: "sql-warehouse"
+
+# OAuth2 On-Behalf-Of (OBO) configuration
+auth:
+  type: oauth
+  oauth:
+    scopes:
+      - "all-apis"
+      - "sql"
+
