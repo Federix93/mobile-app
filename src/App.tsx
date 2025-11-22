@@ -72,24 +72,94 @@ function App() {
     if (!selectedRoom) return;
 
     try {
+      console.log('📂 Loading conversation:', conversationId);
+      
       // Set the conversation ID
       setActiveConversationId(conversationId);
       
       // Load messages for this conversation
-      const messages = await genieApi.getConversationMessages(selectedRoom.id, conversationId);
-      const messageList = messages.messages || messages;
+      const response = await genieApi.getConversationMessages(selectedRoom.id, conversationId);
+      const messageList = response.messages || response;
       
-      if (Array.isArray(messageList)) {
-        const formattedMessages = messageList.map((msg: any) => ({
-          id: msg.message_id || msg.id,
-          content: msg.content,
-          role: (msg.user_id ? 'user' : 'assistant') as 'user' | 'assistant',
-          timestamp: new Date(msg.created_timestamp || Date.now()).toISOString(),
-        }));
+      console.log('📨 Loaded messages:', messageList);
+      
+      if (Array.isArray(messageList) && messageList.length > 0) {
+        // Sort messages by timestamp (oldest first)
+        const sortedMessages = messageList.sort((a: any, b: any) => {
+          const aTime = a.created_timestamp || 0;
+          const bTime = b.created_timestamp || 0;
+          return aTime - bTime; // Ascending order (oldest first)
+        });
+        
+        const formattedMessages: any[] = [];
+        
+        for (const msg of sortedMessages) {
+          // Each message from the API is a user's question
+          // When COMPLETED, it contains Genie's answer in attachments
+          
+          // Always add the user's question first
+          formattedMessages.push({
+            id: msg.message_id || msg.id,
+            content: msg.content,
+            role: 'user' as const,
+            timestamp: new Date(msg.created_timestamp || Date.now()).toISOString(),
+          });
+          
+          // If the message is completed, add Genie's response as a separate message
+          if (msg.status === 'COMPLETED' && msg.attachments && msg.attachments.length > 0) {
+            // Extract Genie's answer from attachments
+            const textAttachment = msg.attachments.find((a: any) => a.text);
+            const queryAttachment = msg.attachments.find((a: any) => a.query);
+            
+            let answerContent = '';
+            if (textAttachment && textAttachment.text.content) {
+              answerContent = textAttachment.text.content;
+            } else if (queryAttachment && queryAttachment.query.description) {
+              answerContent = queryAttachment.query.description;
+            }
+            
+            // Fetch query results if available
+            const processedAttachments = await Promise.all(msg.attachments.map(async (att: any) => {
+              const attachment: any = {
+                type: att.query ? 'query_result' : att.text ? 'text' : 'table',
+                content: att.text?.content || att.query?.description || '',
+                metadata: att.query || att.text || {},
+              };
+              
+              // Fetch query results if statement_id is available
+              if (att.query && att.query.statement_id) {
+                try {
+                  console.log('📊 Fetching query results for statement:', att.query.statement_id);
+                  const statementResults = await genieApi.getStatementResults(att.query.statement_id);
+                  attachment.results = statementResults;
+                  console.log('✅ Got query results for old message');
+                } catch (err) {
+                  console.error('❌ Failed to fetch query results:', err);
+                }
+              }
+              
+              return attachment;
+            }));
+            
+            // Add assistant's response
+            formattedMessages.push({
+              id: `${msg.message_id}-response`,
+              content: answerContent,
+              role: 'assistant' as const,
+              timestamp: new Date(msg.last_updated_timestamp || msg.created_timestamp || Date.now()).toISOString(),
+              attachments: processedAttachments,
+            });
+          }
+        }
+        
+        console.log('✅ Formatted messages (sorted):', formattedMessages);
         setMessages(formattedMessages);
+      } else {
+        console.warn('⚠️ No messages found in conversation');
+        setMessages([]);
       }
     } catch (error) {
-      console.error('Failed to load conversation:', error);
+      console.error('❌ Failed to load conversation:', error);
       setError('Failed to load conversation');
     }
   };

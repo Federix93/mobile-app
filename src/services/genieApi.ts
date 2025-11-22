@@ -265,10 +265,23 @@ class GenieApiClient {
     request: SendMessageRequest
   ): Promise<SendMessageResponse> {
     try {
-      const response = await this.client.post(`/spaces/${roomId}/start-conversation`, {
-        content: request.content,
-        conversation_id: request.conversation_id,
-      });
+      let response;
+      
+      if (request.conversation_id) {
+        // Continue existing conversation
+        console.log('💬 Adding message to existing conversation:', request.conversation_id);
+        response = await this.client.post(
+          `/spaces/${roomId}/conversations/${request.conversation_id}/messages`,
+          { content: request.content }
+        );
+      } else {
+        // Start new conversation
+        console.log('🆕 Starting new conversation');
+        response = await this.client.post(`/spaces/${roomId}/start-conversation`, {
+          content: request.content,
+        });
+      }
+      
       return response.data;
     } catch (error) {
       console.error(`Failed to send message to room ${roomId}:`, error);

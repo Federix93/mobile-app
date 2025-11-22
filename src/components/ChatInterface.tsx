@@ -107,7 +107,8 @@ export const ChatInterface: React.FC = () => {
       console.log('📨 Message submitted:', {
         messageId: response.message_id,
         conversationId: response.conversation_id,
-        hasActiveConversation: !!activeConversationId
+        hasActiveConversation: !!activeConversationId,
+        userQuestion: messageText.substring(0, 50)
       });
 
       // Update conversation ID (always, in case it changes)
@@ -121,10 +122,11 @@ export const ChatInterface: React.FC = () => {
         const maxAttempts = 60; // 2 minutes max
         const pollInterval = 2000; // Check every 2 seconds
         
-        console.log(`🔄 Starting to poll for response.`);
+        console.log(`🔄 Starting to poll for NEW message response`);
+        console.log(`   User asked: "${messageText}"`);
         console.log(`   Room: ${selectedRoom.id}`);
         console.log(`   Conversation: ${response.conversation_id}`);
-        console.log(`   Message: ${response.message_id}`);
+        console.log(`   Polling for Message ID: ${response.message_id}`);
         
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
           // Check if user cancelled
@@ -192,10 +194,10 @@ export const ChatInterface: React.FC = () => {
                   }
                   
                   if (responseContent) {
-                    addMessage({
-                      id: `assistant-${Date.now()}`,
+                    const assistantMessage = {
+                      id: messageStatus.message_id || messageStatus.id || `assistant-${Date.now()}`,
                       content: responseContent,
-                      role: 'assistant',
+                      role: 'assistant' as const,
                       timestamp: new Date(messageStatus.last_updated_timestamp || Date.now()).toISOString(),
                       attachments: messageStatus.attachments.map((a: any) => ({
                         type: a.query ? 'query_result' : a.text ? 'text' : 'unknown',
@@ -203,8 +205,15 @@ export const ChatInterface: React.FC = () => {
                         metadata: a,
                         results: queryResults, // Add the actual data results
                       })),
+                    };
+                    
+                    console.log('✅ Adding assistant response:', {
+                      messageId: assistantMessage.id,
+                      content: responseContent.substring(0, 100) + '...',
+                      conversationId: response.conversation_id
                     });
-                    console.log('✅ Got Genie response from attachments');
+                    
+                    addMessage(assistantMessage);
                     return;
                   } else {
                     console.log('⚠️ No text or query attachment found in completed message');
@@ -217,39 +226,8 @@ export const ChatInterface: React.FC = () => {
                 throw new Error(`Message ${messageStatus.status.toLowerCase()}`);
               }
             } catch (msgError: any) {
-              console.log(`⚠️ getMessage failed:`, msgError.response?.status, msgError.message);
-            }
-            
-            // Try to get all messages from the conversation
-            try {
-              const messagesResponse = await genieApi.getConversationMessages(
-                selectedRoom.id,
-                response.conversation_id
-              );
-              
-              console.log(`📨 Messages response:`, JSON.stringify(messagesResponse, null, 2));
-              
-              const messages = messagesResponse.messages || messagesResponse;
-              
-              if (messages && Array.isArray(messages) && messages.length > 1) {
-                // Find the response message (not our original question)
-                const responseMessage = messages.find(
-                  (m: any) => m.message_id !== response.message_id && m.content && m.content.trim() !== messageText.trim()
-                );
-                
-                if (responseMessage) {
-                  addMessage({
-                    id: responseMessage.message_id || `assistant-${Date.now()}`,
-                    content: responseMessage.content,
-                    role: 'assistant',
-                    timestamp: new Date(responseMessage.created_timestamp || Date.now()).toISOString(),
-                  });
-                  console.log('✅ Got Genie response from messages list');
-                  return;
-                }
-              }
-            } catch (msgsError: any) {
-              console.log(`⚠️ getConversationMessages failed:`, msgsError.message);
+              console.log(`⚠️ getMessage failed (attempt ${attempt + 1}):`, msgError.response?.status, msgError.message);
+              // Don't use fallback - we need to wait for THIS specific message to complete
             }
             
             // Wait before next poll
