@@ -53,22 +53,29 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
     e.stopPropagation();
     
     if (!selectedRoom) return;
-    if (!confirm('Are you sure you want to delete this conversation?')) return;
+    if (!window.confirm('Are you sure you want to delete this conversation?')) return;
 
     setDeletingId(conversationId);
     try {
+      console.log('🔄 Deleting conversation:', conversationId, 'from space:', selectedRoom.id);
       await genieApi.deleteConversation(selectedRoom.id, conversationId);
-      // Remove from list
-      setConversations(prev => prev.filter(c => c.id !== conversationId));
+      
+      console.log('✅ Conversation deleted successfully');
+      
+      // Remove from list - check both id and conversation_id fields
+      setConversations(prev => prev.filter(c => {
+        const cId = c.id || c.conversation_id;
+        return cId !== conversationId;
+      }));
       
       // If this was the active conversation, clear it
       if (conversationId === activeConversationId) {
         useAppStore.getState().setActiveConversationId(null);
         useAppStore.getState().setMessages([]);
       }
-    } catch (error) {
-      console.error('Failed to delete conversation:', error);
-      alert('Failed to delete conversation. Please try again.');
+    } catch (error: any) {
+      console.error('❌ Deletion error:', error);
+      alert(error.message || 'Failed to delete conversation. Please try again.');
     } finally {
       setDeletingId(null);
     }
@@ -123,39 +130,52 @@ export const ConversationHistory: React.FC<ConversationHistoryProps> = ({
             </div>
           ) : (
             <div className="history-list">
-              {conversations.map((conversation) => (
-                <div
-                  key={conversation.id}
-                  className={`history-item ${conversation.id === activeConversationId ? 'active' : ''}`}
-                  onClick={() => {
-                    onSelectConversation(conversation.id);
-                    onClose();
-                  }}
-                >
-                  <div className="history-item-content">
-                    <div className="history-item-title">
-                      {conversation.title || 'Untitled Conversation'}
-                    </div>
-                    <div className="history-item-time">
-                      {formatTimestamp(conversation.last_updated_timestamp || conversation.created_timestamp || Date.now())}
-                    </div>
-                  </div>
-                  <button
-                    className={`delete-button ${deletingId === conversation.id ? 'deleting' : ''}`}
-                    onClick={(e) => handleDelete(conversation.id, e)}
-                    disabled={deletingId === conversation.id}
-                    aria-label="Delete conversation"
+              {conversations.map((conversation) => {
+                // Use conversation_id if id is not available
+                const convId = conversation.id || conversation.conversation_id || '';
+                const isDeleting = deletingId === convId;
+                
+                if (!convId) {
+                  console.warn('⚠️ Conversation without ID:', conversation);
+                  return null;
+                }
+                
+                return (
+                  <div
+                    key={convId}
+                    className={`history-item ${convId === activeConversationId ? 'active' : ''} ${isDeleting ? 'deleting' : ''}`}
+                    onClick={() => {
+                      if (!isDeleting) {
+                        onSelectConversation(convId);
+                        onClose();
+                      }
+                    }}
                   >
-                    {deletingId === conversation.id ? (
-                      <div className="spinner small"></div>
-                    ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                      </svg>
-                    )}
-                  </button>
-                </div>
-              ))}
+                    <div className="history-item-content">
+                      <div className="history-item-title">
+                        {conversation.title || 'Untitled Conversation'}
+                      </div>
+                      <div className="history-item-time">
+                        {formatTimestamp(conversation.last_updated_timestamp || conversation.created_timestamp || Date.now())}
+                      </div>
+                    </div>
+                    <button
+                      className="delete-button"
+                      onClick={(e) => handleDelete(convId, e)}
+                      disabled={isDeleting}
+                      aria-label="Delete conversation"
+                    >
+                      {isDeleting ? (
+                        <div className="spinner small"></div>
+                      ) : (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

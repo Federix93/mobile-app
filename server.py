@@ -149,6 +149,14 @@ console.log('🔐 Authentication mode:', window.APP_CONFIG.isOBO ? 'OAuth/OBO' :
             # Serve static files normally
             super().do_GET()
     
+    def end_headers(self):
+        # Add no-cache headers for HTML files to prevent stale content
+        if self.path.endswith('.html') or self.path == '/' or self.path == '/index.html':
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
+        super().end_headers()
+    
     def do_POST(self):
         # Proxy API requests to Databricks
         if self.path.startswith('/api/'):
@@ -158,6 +166,37 @@ console.log('🔐 Authentication mode:', window.APP_CONFIG.isOBO ? 'OAuth/OBO' :
             return
         
         # For non-API POST requests, return 405
+        self.send_error(405, "Method not allowed")
+    
+    def do_DELETE(self):
+        # Proxy DELETE requests to Databricks
+        if self.path.startswith('/api/'):
+            self.proxy_api_request('DELETE')
+            return
+        
+        # For non-API DELETE requests, return 405
+        self.send_error(405, "Method not allowed")
+    
+    def do_PUT(self):
+        # Proxy PUT requests to Databricks
+        if self.path.startswith('/api/'):
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length) if content_length > 0 else None
+            self.proxy_api_request('PUT', body)
+            return
+        
+        # For non-API PUT requests, return 405
+        self.send_error(405, "Method not allowed")
+    
+    def do_PATCH(self):
+        # Proxy PATCH requests to Databricks
+        if self.path.startswith('/api/'):
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length) if content_length > 0 else None
+            self.proxy_api_request('PATCH', body)
+            return
+        
+        # For non-API PATCH requests, return 405
         self.send_error(405, "Method not allowed")
 
 if __name__ == '__main__':

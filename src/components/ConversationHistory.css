@@ -140,12 +140,12 @@
 
 .history-item-title {
   font-size: var(--font-size-md);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: 4px;
 }
 
 .history-item-time {
@@ -154,28 +154,47 @@
 }
 
 .delete-button {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
   background: transparent;
   border: none;
   border-radius: var(--border-radius-md);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-fast);
-  color: var(--text-secondary);
-  flex-shrink: 0;
+  opacity: 0.5; /* Always visible */
+}
+
+.history-item:hover .delete-button {
+  opacity: 1; /* Brighter on hover */
 }
 
 .delete-button:hover:not(:disabled) {
   background: var(--error-color);
   color: white;
+  transform: scale(1.05);
 }
 
 .delete-button:disabled {
-  opacity: 0.5;
+  opacity: 1;
   cursor: not-allowed;
+}
+
+.history-item.deleting {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Make delete button more visible on touch */
+@media (hover: none) and (pointer: coarse) {
+  .delete-button:active {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }
 
 .history-footer {

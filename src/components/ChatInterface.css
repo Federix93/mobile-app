@@ -149,12 +149,27 @@
 }
 
 .send-button.cancel-mode {
-  background: #dc3545;
+  background: #dc3545 !important;
 }
 
 .send-button.cancel-mode:hover {
-  background: #c82333;
+  background: #c82333 !important;
   transform: scale(1.05);
+}
+
+.send-button svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+  fill: white;
+  flex-shrink: 0;
+  pointer-events: none; /* Prevent SVG from blocking clicks */
+}
+
+.send-button.cancel-mode svg {
+  fill: white;
+  stroke: white;
+  stroke-width: 0;
 }
 
 /* Mobile optimizations */

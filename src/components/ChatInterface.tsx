@@ -372,11 +372,11 @@ export const ChatInterface: React.FC = () => {
           title={isMessageLoading ? "Cancel request" : "Send message"}
         >
           {isMessageLoading ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 6h12v12H6z"/>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="6" width="12" height="12" fill="white"/>
             </svg>
           ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
             </svg>
           )}

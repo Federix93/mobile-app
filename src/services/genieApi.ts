@@ -376,12 +376,32 @@ class GenieApiClient {
    * Delete a conversation
    */
   async deleteConversation(spaceId: string, conversationId: string): Promise<void> {
+    const url = `/spaces/${spaceId}/conversations/${conversationId}`;
+    console.log('🗑️ Attempting to delete conversation:', { spaceId, conversationId, url });
+    
     try {
-      await this.client.delete(`/spaces/${spaceId}/conversations/${conversationId}`);
-      console.log('🗑️ Deleted conversation:', conversationId);
-    } catch (error) {
-      console.error('Failed to delete conversation:', error);
-      throw error;
+      const response = await this.client.delete(url);
+      console.log('✅ Successfully deleted conversation:', conversationId, 'Response:', response.status);
+    } catch (error: any) {
+      console.error('❌ Failed to delete conversation:', {
+        conversationId,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message
+      });
+      
+      // Provide better error messages based on status code
+      const status = error.response?.status;
+      if (status === 404) {
+        throw new Error('Conversation not found. It may have been already deleted.');
+      } else if (status === 403) {
+        throw new Error('You do not have permission to delete this conversation.');
+      } else if (status === 405) {
+        throw new Error('The Genie API does not support deleting conversations.');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to delete conversation.');
+      }
     }
   }
 }
