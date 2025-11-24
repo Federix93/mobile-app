@@ -162,22 +162,6 @@ The app automatically:
 3. **API Proxy**: All `/api/*` requests are proxied to Databricks APIs with OBO authentication
 4. **Mobile Optimized**: Responsive design with touch-friendly UI
 
-### Environment Variables (Managed by Databricks)
-
-The `app.yaml` configures these automatically:
-
-```yaml
-env:
-  - name: GENIE_SPACE_ID
-    valueFrom: "genie-space-id"  # Resource key
-  - name: SQL_WAREHOUSE_ID
-    valueFrom: "sql-warehouse"    # Resource key
-```
-
-Databricks injects the actual values at runtime.
-
----
-
 ## 📂 Project Structure
 
 ```
@@ -285,76 +269,9 @@ databricks apps logs your-app-name
 # Apps → Your App → Logs tab
 ```
 
----
-
-## 🔄 Updating the App
-
-To deploy a new version:
-
-1. **Make your changes** to the source code
-2. **Rebuild**:
-   ```bash
-   npm run build
-   ```
-3. **Stop the app** in Databricks UI
-4. **Upload updated files** (replace existing files)
-5. **Start the app** again
-
-The app will automatically use the new version.
-
----
-
-## 🧪 Local Development (Optional)
-
-For development and testing, you can run locally with a `.env` file:
-
-```env
-VITE_DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
-VITE_DATABRICKS_TOKEN=dapi_your_personal_access_token
-VITE_GENIE_SPACE_ID=your-genie-space-id
-VITE_SQL_WAREHOUSE_ID=your-warehouse-id
-```
-
-Run dev server:
-```bash
-npm run dev
-```
-
-**Note:** Local development uses Personal Access Tokens. Production deployment uses OAuth OBO.
-
----
-
-## 📚 Resources
-
-- **Databricks Apps**: https://docs.databricks.com/apps/
-- **Genie API**: https://docs.databricks.com/genie/
-- **OAuth OBO**: https://docs.databricks.com/dev-tools/auth/oauth-m2m.html
-- **React**: https://react.dev/
-- **Vite**: https://vitejs.dev/
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test on Databricks Apps
-5. Submit a pull request
-
----
-
 ## 📄 License
 
 Built with React, TypeScript, and Vite for Databricks Apps.
 
 ---
-
-## 🆘 Support
-
-For issues or questions:
-- Check the **Troubleshooting** section above
-- Review Databricks Apps logs
-- Open an issue in this repository
-- Consult Databricks documentation
 
