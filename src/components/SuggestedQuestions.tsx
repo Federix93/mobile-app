@@ -107,23 +107,43 @@ export const SuggestedQuestions: React.FC<SuggestedQuestionsProps> = ({ onQuesti
     <div className="suggested-questions">
       <div className="suggested-header">
         <svg className="magic-lamp-large" width="100" height="100" viewBox="0 0 100 100" fill="none">
-          {/* Magic smoke/genie coming out */}
+          {/* Magic smoke/genie coming out - more dynamic */}
           <g className="genie-smoke">
+            {/* Main smoke cloud */}
             <path d="M50 25 Q45 20, 43 15 Q42 10, 45 8 Q48 6, 50 8 Q52 6, 55 8 Q58 10, 57 15 Q55 20, 50 25 Z" 
-                  fill="url(#smokeGradient)" opacity="0.7">
+                  fill="url(#smokeGradient)" opacity="0.8">
               <animateTransform attributeName="transform" type="scale" 
-                values="1 1; 1.1 1.2; 1 1" dur="3s" repeatCount="indefinite"/>
+                values="0.8 0.8; 1.2 1.3; 0.8 0.8" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/>
             </path>
+            
+            {/* Secondary smoke clouds */}
             <path d="M50 20 Q48 17, 47 14 Q46 11, 48 10 Q50 9, 52 10 Q54 11, 53 14 Q52 17, 50 20 Z" 
-                  fill="url(#smokeGradient2)" opacity="0.5">
+                  fill="url(#smokeGradient2)" opacity="0.6">
               <animateTransform attributeName="transform" type="scale" 
-                values="1 1; 1.15 1.3; 1 1" dur="2.5s" repeatCount="indefinite"/>
+                values="1 1; 1.25 1.4; 1 1" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.4;0.8;0.4" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
             </path>
+            
+            {/* Wispy smoke trails */}
+            <circle cx="46" cy="12" r="3" fill="url(#smokeGradient3)" opacity="0.4">
+              <animate attributeName="cy" values="12;5;12" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="3;5;3" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="54" cy="12" r="3" fill="url(#smokeGradient3)" opacity="0.4">
+              <animate attributeName="cy" values="12;5;12" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="3;5;3" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.2;0.6;0.2" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+            </circle>
           </g>
 
-          {/* Lamp body - more elegant shape */}
+          {/* Lamp body - more elegant shape with wiggle */}
           <path d="M35 70 Q32 65, 33 58 L35 45 Q36 38, 40 35 Q45 32, 50 32 Q55 32, 60 35 Q64 38, 65 45 L67 58 Q68 65, 65 70 Z" 
-                fill="url(#lampBodyGradient)" stroke="#D4AF37" strokeWidth="1.5"/>
+                fill="url(#lampBodyGradient)" stroke="#D4AF37" strokeWidth="1.5">
+            <animateTransform attributeName="transform" type="rotate" 
+              values="-2 50 50; 2 50 50; -2 50 50" dur="3s" repeatCount="indefinite"/>
+          </path>
           
           {/* Lamp decorative bands */}
           <ellipse cx="50" cy="45" rx="17" ry="2" fill="#B8860B" opacity="0.6"/>
@@ -145,42 +165,78 @@ export const SuggestedQuestions: React.FC<SuggestedQuestionsProps> = ({ onQuesti
           {/* Lamp base */}
           <ellipse cx="50" cy="70" rx="15" ry="5" fill="url(#lampBaseGradient)"/>
           
-          {/* Sparkles - more dynamic */}
+          {/* Sparkles - cartoon style, flying around */}
           <g className="sparkles-dynamic">
+            {/* Big center sparkle */}
             <circle cx="50" cy="15" r="2.5" fill="#FFD700">
-              <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite"/>
-              <animate attributeName="r" values="2;3;2" dur="1.5s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="43" cy="18" r="1.5" fill="#FFA500">
-              <animate attributeName="opacity" values="0;0.8;0" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
-              <animate attributeName="cy" values="18;12;18" dur="2s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="57" cy="18" r="1.5" fill="#FFA500">
-              <animate attributeName="opacity" values="0;0.8;0" dur="2s" begin="0.6s" repeatCount="indefinite"/>
-              <animate attributeName="cy" values="18;12;18" dur="2.2s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="48" cy="12" r="1" fill="#FFD700">
-              <animate attributeName="opacity" values="0;1;0" dur="1.6s" begin="0.4s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="52" cy="12" r="1" fill="#FFD700">
-              <animate attributeName="opacity" values="0;1;0" dur="1.7s" begin="0.8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0;1;0.8;1;0" dur="1.2s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="1.5;3.5;1.5" dur="1.2s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="15;13;15" dur="1.2s" repeatCount="indefinite"/>
             </circle>
             
-            {/* Star sparkles */}
-            <g transform="translate(45, 10)">
-              <path d="M0,-2 L0.5,0 L2,0.5 L0.5,0 L0,2 L-0.5,0 L-2,0.5 L-0.5,0 Z" fill="white">
-                <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+            {/* Flying sparkles - left side */}
+            <circle cx="43" cy="18" r="1.5" fill="#FFA500">
+              <animate attributeName="opacity" values="0;1;0" dur="1.5s" begin="0s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="18;8;18" dur="1.5s" repeatCount="indefinite"/>
+              <animate attributeName="cx" values="43;38;43" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="45" cy="20" r="1.2" fill="#FFD700">
+              <animate attributeName="opacity" values="0;0.9;0" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="20;10;20" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+              <animate attributeName="cx" values="45;40;45" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+            </circle>
+            
+            {/* Flying sparkles - right side */}
+            <circle cx="57" cy="18" r="1.5" fill="#FFA500">
+              <animate attributeName="opacity" values="0;1;0" dur="1.6s" begin="0.2s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="18;8;18" dur="1.6s" begin="0.2s" repeatCount="indefinite"/>
+              <animate attributeName="cx" values="57;62;57" dur="1.6s" begin="0.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="55" cy="20" r="1.2" fill="#FFD700">
+              <animate attributeName="opacity" values="0;0.9;0" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="20;10;20" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+              <animate attributeName="cx" values="55;60;55" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+            </circle>
+            
+            {/* Small twinkling sparkles */}
+            <circle cx="48" cy="12" r="1" fill="#FFD700">
+              <animate attributeName="opacity" values="0;1;0" dur="1.3s" begin="0.4s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="0.5;1.5;0.5" dur="1.3s" begin="0.4s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="52" cy="12" r="1" fill="#FFD700">
+              <animate attributeName="opacity" values="0;1;0" dur="1.4s" begin="0.7s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="0.5;1.5;0.5" dur="1.4s" begin="0.7s" repeatCount="indefinite"/>
+            </circle>
+            
+            {/* Star sparkles - rotating and pulsing */}
+            <g transform="translate(42, 12)">
+              <path d="M0,-3 L0.8,0 L3,0.8 L0.8,0 L0,3 L-0.8,0 L-3,0.8 L-0.8,0 Z" fill="white" stroke="#FFD700" strokeWidth="0.5">
+                <animate attributeName="opacity" values="0;1;0.7;1;0" dur="1.5s" repeatCount="indefinite"/>
                 <animateTransform attributeName="transform" type="rotate" 
-                  values="0 0 0; 180 0 0; 360 0 0" dur="3s" repeatCount="indefinite"/>
+                  values="0 0 0; 360 0 0" dur="2s" repeatCount="indefinite"/>
+                <animateTransform attributeName="transform" type="scale" additive="sum"
+                  values="0.5;1.2;0.5" dur="1.5s" repeatCount="indefinite"/>
               </path>
             </g>
-            <g transform="translate(55, 10)">
-              <path d="M0,-2 L0.5,0 L2,0.5 L0.5,0 L0,2 L-0.5,0 L-2,0.5 L-0.5,0 Z" fill="white">
-                <animate attributeName="opacity" values="0;1;0" dur="2.3s" begin="0.5s" repeatCount="indefinite"/>
+            <g transform="translate(58, 12)">
+              <path d="M0,-3 L0.8,0 L3,0.8 L0.8,0 L0,3 L-0.8,0 L-3,0.8 L-0.8,0 Z" fill="white" stroke="#FFD700" strokeWidth="0.5">
+                <animate attributeName="opacity" values="0;1;0.7;1;0" dur="1.7s" begin="0.4s" repeatCount="indefinite"/>
                 <animateTransform attributeName="transform" type="rotate" 
-                  values="0 0 0; -180 0 0; -360 0 0" dur="3.5s" repeatCount="indefinite"/>
+                  values="0 0 0; -360 0 0" dur="2.5s" repeatCount="indefinite"/>
+                <animateTransform attributeName="transform" type="scale" additive="sum"
+                  values="0.5;1.2;0.5" dur="1.7s" begin="0.4s" repeatCount="indefinite"/>
               </path>
             </g>
+            
+            {/* Additional magical particles */}
+            <circle cx="40" cy="15" r="0.8" fill="#c4b5fd">
+              <animate attributeName="opacity" values="0;0.8;0" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="15;10;15" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="60" cy="15" r="0.8" fill="#c4b5fd">
+              <animate attributeName="opacity" values="0;0.8;0" dur="2.2s" begin="0.8s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="15;10;15" dur="2.2s" begin="0.8s" repeatCount="indefinite"/>
+            </circle>
           </g>
           
           <defs>
@@ -207,6 +263,10 @@ export const SuggestedQuestions: React.FC<SuggestedQuestionsProps> = ({ onQuesti
               <stop offset="0%" stopColor="#764ba2" stopOpacity="0.7"/>
               <stop offset="100%" stopColor="#c4b5fd" stopOpacity="0.2"/>
             </linearGradient>
+            <radialGradient id="smokeGradient3">
+              <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.8"/>
+              <stop offset="100%" stopColor="#667eea" stopOpacity="0.2"/>
+            </radialGradient>
           </defs>
         </svg>
         <div className="suggested-text">
