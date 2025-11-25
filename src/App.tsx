@@ -40,19 +40,9 @@ function App() {
       // Auto-load and select the configured room
       const rooms = await genieApi.getRooms();
       if (rooms.length > 0) {
-        // The first room should be the configured one (moved to front in getRooms)
-        const configuredSpaceId = genieApi.getDefaultSpaceId();
+        // The first room is already the configured one (moved to front in getRooms)
         setSelectedRoom(rooms[0]);
-        console.log('✅ Auto-selected room:', rooms[0].name, `(ID: ${rooms[0].id})`);
-        console.log('📋 Configured GENIE_SPACE_ID:', configuredSpaceId);
-        
-        // Warn if selected room doesn't match configuration
-        if (configuredSpaceId && rooms[0].id !== configuredSpaceId) {
-          console.warn('⚠️ WARNING: Selected room does not match configured GENIE_SPACE_ID!');
-          console.warn('   Configured:', configuredSpaceId);
-          console.warn('   Selected:', rooms[0].id, '-', rooms[0].name);
-          console.warn('   All available rooms:', rooms.map(r => `${r.id} - ${r.name}`));
-        }
+        console.log('✅ Auto-selected room:', rooms[0].name);
       }
       
       // Keep splash screen visible for at least 2 seconds for smooth UX (only on first load)
