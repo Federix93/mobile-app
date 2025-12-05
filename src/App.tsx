@@ -120,9 +120,24 @@ function App() {
             
             // Fetch query results if available
             const processedAttachments = await Promise.all(msg.attachments.map(async (att: any) => {
+              // Determine attachment type and content
+              let type: string;
+              let content: any;
+              
+              if (att.query) {
+                type = 'query_result';
+                content = att.query.description || '';
+              } else if (att.text) {
+                type = 'text';
+                content = att.text.content || '';
+              } else {
+                // Skip unknown attachment types
+                return null;
+              }
+              
               const attachment: any = {
-                type: att.query ? 'query_result' : att.text ? 'text' : 'table',
-                content: att.text?.content || att.query?.description || '',
+                type,
+                content,
                 metadata: att.query || att.text || {},
               };
               
@@ -141,13 +156,13 @@ function App() {
               return attachment;
             }));
             
-            // Add assistant's response
+            // Add assistant's response (filter out null attachments)
             formattedMessages.push({
               id: `${msg.message_id}-response`,
               content: answerContent,
               role: 'assistant' as const,
               timestamp: new Date(msg.last_updated_timestamp || msg.created_timestamp || Date.now()).toISOString(),
-              attachments: processedAttachments,
+              attachments: processedAttachments.filter(att => att !== null),
             });
           }
         }
